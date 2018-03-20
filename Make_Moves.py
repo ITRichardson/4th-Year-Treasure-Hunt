@@ -8,6 +8,8 @@ def cls():
 
 
 def create_grid(width, height, contents):
+    #create a 2d array with the specified dimensions & contents
+    #called 3 times to create the 3 game tables
     grid = []
     for x in range(height):
         grid.append([])
@@ -17,6 +19,7 @@ def create_grid(width, height, contents):
 
 
 def display_grid(grid, height):
+    #prints any array sent to it in a readable format
     print("-" * 32)
     for y in range(0, height):
         print("|"+"|".join(grid[y])+"|")
@@ -24,6 +27,7 @@ def display_grid(grid, height):
 
 
 def place_object(grid, object_symbol, num_object, width, height):
+    #place the given object symbol into the map in random empty locations
     from random import randint
     while num_object > 0:
         rand_x = randint(-1, width-1)
@@ -35,6 +39,7 @@ def place_object(grid, object_symbol, num_object, width, height):
 
 
 def hide_objects(grid, num_chests, num_bandits, width, height):
+    #initialises the hidden grid, by hiding the various objects in it, using the place object function
     grid[7][0] = " * "
     grid = place_object(grid, "T", num_chests, width, height)
     grid = place_object(grid, "B", num_bandits, width, height)
@@ -42,6 +47,8 @@ def hide_objects(grid, num_chests, num_bandits, width, height):
 
 
 def get_move():
+    #take and validate the user's choice of movement directions and distances
+    #returns negative value for left and up movements
     vert_direction = ""
     horz_direction = ""
     while vert_direction != "U" and vert_direction != "D":
@@ -49,7 +56,7 @@ def get_move():
         vert_direction = input().upper()
     print("Enter number of squares:")
     vert_move = int(input())
-    if vert_direction == "D":
+    if vert_direction == "U":
         vert_move = 0 - vert_move
     while horz_direction != "L" and horz_direction != "R":
         print("Enter L for Left, R for Right:")
@@ -60,20 +67,20 @@ def get_move():
         horz_move = 0 - horz_move
     return vert_move, horz_move
 
-def initialise_game(width, height):
+def initialise_game(width, height,num_chests,num_bandits):
     player_x_pos = 0
     player_y_pos = height-1
     hidden_grid = create_grid(width, height, "   ")
-    hidden_grid = hide_objects(hidden_grid, 10, 5, width, height)
+    hidden_grid = hide_objects(hidden_grid, num_chests, num_bandits, width, height)
     hidden_grid[player_y_pos][player_x_pos] = " * "
     player_grid = create_grid(width, height, "   ")
     player_grid[player_y_pos][player_x_pos] = " * "
     counting_grid = create_grid(width, height, 0)
     return hidden_grid, player_grid, counting_grid, player_y_pos,
 
-def play_game(width, height):
+def play_game(width, height, num_chests, num_bandits):
     cls()
-    hidden_grid, player_grid, counting_grid = initialise_game(width,height)
+    hidden_grid, player_grid, counting_grid = initialise_game(width, height, num_chests, num_bandits)
     display_grid(player_grid, height)
     vert_move, horz_move = get_move()
 
@@ -102,7 +109,7 @@ def menu():
                 valid_choice = True
         # make selections based on the input
         if choice == "1":
-            play_game(8,8)
+            play_game(8,8,10,5)
             choice = ""
             input()
         elif choice == "2":
