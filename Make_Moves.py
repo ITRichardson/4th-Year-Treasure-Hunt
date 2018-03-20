@@ -19,7 +19,7 @@ def create_grid(width, height, contents):
 
 
 def display_grid(grid, height, width):
-    #prints any array sent to it in a readable format
+    #prints any of the 2d arrays sent to it in a readable format
     cls()
     print("-" *(width*4))
     for y in range(0, height):
@@ -80,12 +80,14 @@ def initialise_game(width, height,num_chests,num_bandits):
     return hidden_grid, player_grid, counting_grid, player_y_pos,player_x_pos
 
 def select_custom_game():
+    #allow user to define the custom sized grid and numbers of objects
     cls()
     print("SELECT A GRID SIZE")
     print("-"*32)
     print("1\t10 x 10")
     print("2\t12 x 12")
     print("3\t16 x 16")
+    print("4\t25 x 25")
     choice = "x"
     while choice not in "123":
         choice = input("Enter your choice of size: ")
@@ -98,6 +100,9 @@ def select_custom_game():
         if choice == "3":
             height = 16
             width = 16
+        if choice == "4":
+            height = 25
+            width = 25
     num_chests = int(input("Enter the number of Chests: "))
     num_bandits = int(input("Enter the number of Bandits: "))
     return height, width, num_chests, num_bandits
