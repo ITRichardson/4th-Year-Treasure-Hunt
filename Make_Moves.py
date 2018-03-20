@@ -18,13 +18,13 @@ def create_grid(width, height, contents):
     return grid
 
 
-def display_grid(grid, height):
+def display_grid(grid, height, width):
     #prints any array sent to it in a readable format
     cls()
-    print("-" * 32)
+    print("-" *(width*4))
     for y in range(0, height):
         print("|"+"|".join(grid[y])+"|")
-        print("-"*32)
+        print("-" * (width * 4))
 
 
 def place_object(grid, object_symbol, num_object, width, height):
@@ -109,7 +109,7 @@ def play_game(width, height, num_chests, num_bandits):
     score = 0
     total_moves = 0
     hidden_grid, player_grid, counting_grid, player_y_pos, player_x_pos = initialise_game(width, height, num_chests, num_bandits)
-    display_grid(player_grid, height)
+    display_grid(player_grid, height, width)
 
     while score < 100 and num_chests > 0:
         valid_move = False
@@ -136,7 +136,7 @@ def play_game(width, height, num_chests, num_bandits):
             hidden_grid[player_y_pos][player_x_pos] = " B "
             num_bandits += 1
             num_chests -= 1
-        display_grid(player_grid, height)
+        display_grid(player_grid, height, width)
         print("Score: ", score)
         print("Number of Moves: ", total_moves)
         print("Number of Chests Remaining: ", num_chests)
