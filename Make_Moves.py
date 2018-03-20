@@ -20,6 +20,7 @@ def create_grid(width, height, contents):
 
 def display_grid(grid, height):
     #prints any array sent to it in a readable format
+    cls()
     print("-" * 32)
     for y in range(0, height):
         print("|"+"|".join(grid[y])+"|")
@@ -76,13 +77,76 @@ def initialise_game(width, height,num_chests,num_bandits):
     player_grid = create_grid(width, height, "   ")
     player_grid[player_y_pos][player_x_pos] = " * "
     counting_grid = create_grid(width, height, 0)
-    return hidden_grid, player_grid, counting_grid, player_y_pos,
+    return hidden_grid, player_grid, counting_grid, player_y_pos,player_x_pos
+
+def select_custom_game():
+    cls()
+    print("SELECT A GRID SIZE")
+    print("-"*32)
+    print("1\t10 x 10")
+    print("2\t12 x 12")
+    print("3\t16 x 16")
+    choice = "x"
+    while choice not in "123":
+        choice = input("Enter your choice of size: ")
+        if choice == "1":
+            height = 10
+            width = 10
+        if choice == "2":
+            height = 12
+            width = 12
+        if choice == "3":
+            height = 16
+            width = 16
+    num_chests = int(input("Enter the number of Chests: "))
+    num_bandits = int(input("Enter the number of Bandits: "))
+    return height, width, num_chests, num_bandits
+
+
 
 def play_game(width, height, num_chests, num_bandits):
     cls()
-    hidden_grid, player_grid, counting_grid = initialise_game(width, height, num_chests, num_bandits)
+    score = 0
+    total_moves = 0
+    hidden_grid, player_grid, counting_grid, player_y_pos, player_x_pos = initialise_game(width, height, num_chests, num_bandits)
     display_grid(player_grid, height)
-    vert_move, horz_move = get_move()
+
+    while score < 100 and num_chests > 0:
+        valid_move = False
+        while not valid_move:
+            vert_move, horz_move = get_move()
+            if player_x_pos + horz_move < 0 or player_x_pos + horz_move > width - 1 or player_y_pos + vert_move < 0 or player_y_pos + vert_move > height - 1:
+                print("Invalid Move")
+            else:
+                total_moves += 1
+                valid_move = True
+        player_grid[player_y_pos][player_x_pos] = "   "
+        player_x_pos += horz_move
+        player_y_pos += vert_move
+        player_grid[player_y_pos][player_x_pos] = " * "
+
+        if hidden_grid[player_y_pos][player_x_pos] == " T ":
+            print("You have found a treasure chest! 10 Gold coins!")
+            counting_grid[player_y_pos][player_x_pos] += 1
+            score += 10
+        elif hidden_grid[player_y_pos][player_x_pos] == " B ":
+            print("Oh dear! You have been attacked by bandits! Lose all of your gold.")
+            score = 0
+        if counting_grid[player_y_pos][player_x_pos] >= 2:
+            hidden_grid[player_y_pos][player_x_pos] = " B "
+            num_bandits += 1
+            num_chests -= 1
+        display_grid(player_grid, height)
+        print("Score: ", score)
+        print("Number of Moves: ", total_moves)
+        print("Number of Chests Remaining: ", num_chests)
+        print("Number of Bandits on the map: ", num_bandits)
+
+
+    if score == 100:
+        print("Congratulations! You have won the game!")
+    else:
+        print("You have lost. Feel ashamed.")
 
 
 
@@ -114,6 +178,8 @@ def menu():
             input()
         elif choice == "2":
             print("PLAY CUSTOM GAME")
+            width, height, num_chests, num_bandits  = select_custom_game()
+            play_game(width, height, num_chests, num_bandits)
             choice = ""
             input()
     print("Exiting Program")
